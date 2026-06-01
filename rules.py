@@ -5,6 +5,9 @@ from typing import TYPE_CHECKING
 from BaseClasses import CollectionState
 from worlds.generic.Rules import add_rule, set_rule
 
+from rule_builder.options import OptionFilter
+from rule_builder.rules import Has, HasAll, Rule
+
 if TYPE_CHECKING:
 	from .world import SolitaireWorld
 
@@ -25,7 +28,7 @@ def set_all_location_rules(world: SolitaireWorld) -> None:
 			location_name = f"{values[value]} of {suits[suit]} on foundation"
 			item_names = [f"{values[val]} of {suits[suit]}" for val in range(1, value + 1)]
 			
-			set_rule(world.get_location(location_name), lambda state: state.has_all(item_names, world.player))
+			world.set_rule(world.get_location(location_name), HasAll(*item_names))
 
 def set_completion_condition(world: SolitaireWorld) -> None:
-	world.multiworld.completion_condition[world.player] = lambda state: state.has_all(("Hearts complete", "Diamonds complete", "Clubs complete", "Spades complete"), world.player)
+	world.set_completion_rule(HasAll("Hearts complete", "Diamonds complete", "Clubs complete", "Spades complete"))
